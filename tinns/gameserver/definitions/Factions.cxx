@@ -18,7 +18,8 @@ bool PDefFaction::LoadFromDef(PTokenList *Tokens)
                 continue;
 
             case 1 :
-                mIndex = atol(i->c_str()); break;
+                mIndex = atol(i->c_str());
+                break;
 
             case 2 :
                 mName = *i;
@@ -26,19 +27,21 @@ bool PDefFaction::LoadFromDef(PTokenList *Tokens)
                 break;
 
             case 3 :
-                mStartValue = atol(i->c_str()); break;
+                mStartValue = atol(i->c_str());
+                break;
 
             case 4:
-                mAffected = atol(i->c_str())!=0; break;
+                mAffected = atol(i->c_str())!=0;
+                break;
 
             case 5:
-                mSL = atol(i->c_str()); break;
+                mSL = atol(i->c_str());
+                break;
 
             default :
-            {
                 if(Idx-6 < NUMFACTIONS)
-                    mRelations[Idx-6] = atol(i->c_str()); break;
-            }
+                    mRelations[Idx-6] = atol(i->c_str());
+                break;
         }
     }
 

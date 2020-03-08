@@ -24,12 +24,12 @@ int main()
     signal(SIGINT, signal_handler); // TODO: change for sigaction()
 
 
-    if(!InitTinNS())
+    if (!InitTinNS())
     {
-      if(Console)
-        Console->Print("%s Aborting startup.", Console->ColorText(RED, BLACK, "[Fatal]"));
+        if(Console)
+            Console->Print("%s Aborting startup.", Console->ColorText(RED, BLACK, "[Fatal]"));
         Shutdown(); // exits with 0 ...
-  }
+    }
 
     //RemoteConsole->Start();
     GameServer->Start();

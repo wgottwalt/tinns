@@ -792,7 +792,7 @@ bool PUdpUseObject::DoAction()
                 mDecodeData->mState = DECODE_ACTION_DONE | DECODE_FINISHED;
                 break;
               }
-              // else we continue to undefined
+              [[fallthrough]];
             }
             case 27: //Old goguardian
               //case 21: //LOCATION FOR 20

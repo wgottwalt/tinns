@@ -42,8 +42,8 @@ bool Init()
     Config = new PConfig();
     if(!Config->LoadOptions(InfoConfigTemplate, "./conf/infoserver.conf"))
         return false; //Shutdown();
-  if(!AdditionnalConfigChecks())
-    return false; //Shutdown();
+    if(!AdditionnalConfigChecks())
+        return false; //Shutdown();
 
     ServerSock = new ServerSocket();
     Server = new PServer();
