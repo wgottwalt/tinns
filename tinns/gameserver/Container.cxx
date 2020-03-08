@@ -43,20 +43,20 @@ bool PContainerEntry::SQLSave( uint32_t CharID, uint32_t InvLoc )
 {
   std::string query, queryv;
 
-  queryv += Ssprintf( " inv_charid='%u',inv_loc='%u',inv_x='%u',inv_y='%u'", CharID, InvLoc, mPosX, mPosY );
-  queryv += Ssprintf( ",inv_itemid='%u',inv_qty='%u'", mItem->mItemID, mItem->mStackSize );
-  //queryv += Ssprintf( ",inv_type='%u'", 0 );
-  queryv += Ssprintf( ",inv_cdur='%u'", mItem->mCurDuration );
-  queryv += Ssprintf( ",inv_dmg='%u'", mItem->mDamages );
-  queryv += Ssprintf( ",inv_frq='%u'", mItem->mFrequency );
-  queryv += Ssprintf( ",inv_hnd='%u'", mItem->mHandling );
-  queryv += Ssprintf( ",inv_rng='%u'", mItem->mRange );
-  queryv += Ssprintf( ",inv_mdur='%u'", mItem->mMaxDuration );
+  queryv += Misc::Ssprintf( " inv_charid='%u',inv_loc='%u',inv_x='%u',inv_y='%u'", CharID, InvLoc, mPosX, mPosY );
+  queryv += Misc::Ssprintf( ",inv_itemid='%u',inv_qty='%u'", mItem->mItemID, mItem->mStackSize );
+  //queryv += Misc::Ssprintf( ",inv_type='%u'", 0 );
+  queryv += Misc::Ssprintf( ",inv_cdur='%u'", mItem->mCurDuration );
+  queryv += Misc::Ssprintf( ",inv_dmg='%u'", mItem->mDamages );
+  queryv += Misc::Ssprintf( ",inv_frq='%u'", mItem->mFrequency );
+  queryv += Misc::Ssprintf( ",inv_hnd='%u'", mItem->mHandling );
+  queryv += Misc::Ssprintf( ",inv_rng='%u'", mItem->mRange );
+  queryv += Misc::Ssprintf( ",inv_mdur='%u'", mItem->mMaxDuration );
 
   if ( mInvID )
   {
     query = "UPDATE inventory SET " + queryv;
-    query += Ssprintf( " WHERE inv_id='%u' LIMIT 1;", mInvID );
+    query += Misc::Ssprintf( " WHERE inv_id='%u' LIMIT 1;", mInvID );
   }
   else
   {
@@ -92,7 +92,7 @@ bool PContainerEntry::SQLDelete()
 
   if ( mInvID )
   {
-    query = Ssprintf( "DELETE FROM inventory WHERE inv_id='%u' LIMIT 1;", mInvID );
+    query = Misc::Ssprintf( "DELETE FROM inventory WHERE inv_id='%u' LIMIT 1;", mInvID );
 
     if ( MySQL->GameQuery( query.c_str() ) )
     {
@@ -529,7 +529,7 @@ uint8_t PContainer::RandomFill( uint8_t nItemCount, int nItemContainerDefIndex )
 
     for ( uint8_t i = 0; i < nItemCount; ++i )
     {
-      nItemSeqId = GetRandom( NumItemsDefs, 1 );
+      nItemSeqId = Misc::GetRandom( NumItemsDefs, 1 );
 
       if (( nItemDef = GameDefs->Items()->GetDefBySeqIndex( nItemSeqId ) ) )
       {

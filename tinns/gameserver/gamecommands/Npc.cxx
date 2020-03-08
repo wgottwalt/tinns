@@ -117,7 +117,7 @@ void PCommands::doNPC()
         uint32_t tLocation = source->GetChar()->GetLocation();
 
         uint8_t tAngle = source->GetChar()->Coords.mLR;
-        std::string tNPCAngle = Ssprintf( "%d", tAngle );
+        std::string tNPCAngle = Misc::Ssprintf( "%d", tAngle );
 
         std::string tNPCScript = t_defNpc->GetStandardScript();
         uint32_t tNPCHealth = t_defNpc->GetHealth() * NPC_HEALTHFACTOR;
@@ -146,8 +146,8 @@ void PCommands::doNPC()
         /*-------------------------------------------------------*/
         char tSql2[500];
         snprintf(tSql2, 500, "INSERT INTO npc_spawns (npc_worldid, npc_nameid, npc_typeid, npc_name, npc_location, npc_x, npc_y, npc_z, npc_angle, npc_clothing, npc_loot, npc_unknown, npc_trader, npc_customname) VALUES (%d, %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, \"%s\")",
-            tNewWorldID, tSpawnID, GetRandom(65000, 1000), tNPCScript.c_str(), tLocation, tNPCPosX, tNPCPosY, tNPCPosZ, atoi(tNPCAngle.c_str()),
-            GetRandom(65000, 1000), t_defNpc->GetLoot(), tNPCHealth, 0, tCustomName);
+            tNewWorldID, tSpawnID, Misc::GetRandom(65000, 1000), tNPCScript.c_str(), tLocation, tNPCPosX, tNPCPosY, tNPCPosZ, atoi(tNPCAngle.c_str()),
+            Misc::GetRandom(65000, 1000), t_defNpc->GetLoot(), tNPCHealth, 0, tCustomName);
 
         if(MySQL->GameQuery(tSql2))
         {

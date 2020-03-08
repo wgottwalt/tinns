@@ -206,7 +206,7 @@ int PDefItemsMap::GetRandomItemIdFromGroup( int nGroupId ) const
       int groupSize = selectedEntry->second.size();
       if( groupSize )
       {
-        return selectedEntry->second[GetRandom(groupSize - 1, 0)];
+        return selectedEntry->second[Misc::GetRandom(groupSize - 1, 0)];
       }
     }
   }

@@ -120,8 +120,8 @@ void PInfoServer::GSLiveCheck()
         if(it != Serverlist.end())
         {
             strncpy(it->second.mName, row[s_name], MAX_SERVER_NAME_LENGTH);
-            it->second.mLanIp = IPStringToDWord(row[s_lanaddr]);
-            it->second.mWanIp = IPStringToDWord(row[s_wanaddr]);
+            it->second.mLanIp = Misc::ip4StringToUint32(row[s_lanaddr]);
+            it->second.mWanIp = Misc::ip4StringToUint32(row[s_wanaddr]);
             it->second.mPort = atoi(row[s_port]);
             it->second.mPlayers = atoi(row[s_players]);
             /* Prepared for future addon Servers by Accesslevel */
@@ -149,8 +149,8 @@ void PInfoServer::GSLiveCheck()
             GameServers tmpServer;
 
             strncpy(tmpServer.mName, row[s_name], MAX_SERVER_NAME_LENGTH);
-            tmpServer.mLanIp = IPStringToDWord(row[s_lanaddr]);
-            tmpServer.mWanIp = IPStringToDWord(row[s_wanaddr]);
+            tmpServer.mLanIp = Misc::ip4StringToUint32(row[s_lanaddr]);
+            tmpServer.mWanIp = Misc::ip4StringToUint32(row[s_wanaddr]);
             tmpServer.mLasttimestamp = atol(row[s_lastupdate]);
             tmpServer.mPlayers = atoi(row[s_players]);
             tmpServer.mPort = atoi(row[s_port]);
@@ -352,7 +352,7 @@ bool PInfoServer::HandleAuthenticate(PClient *Client, PInfoState *State, const u
                 case -11:
                 {
                     //errorReason = "Login rejected. You have to be " + GetAccessString(Config->GetOptionInt("minlevel")) + " or higher";
-                    errorReason = "Level " + GetAccessString(Config->GetOptionInt("minlevel")) + " or higher required";
+                    errorReason = "Level " + Misc::GetAccessString(Config->GetOptionInt("minlevel")) + " or higher required";
                     break;
                 }
                 case -10:
@@ -488,13 +488,13 @@ bool PInfoServer::HandleServerList(PClient *Client, const uint8_t *Packet, int32
       if(it->second.mOnline == true)
       {
           Console->Print("Sending server name: %s ip: %s player: %d port: %d online: yes", it->second.mName,
-                         IPlongToString(it->second.mLanIp), it->second.mPlayers, it->second.mPort);
+                         Misc::uint32ToIp4String(it->second.mLanIp), it->second.mPlayers, it->second.mPort);
           *(uint16_t *)&SERVERLIST[11] = 1;
       }
       else if(it->second.mOnline == false)
       {
           Console->Print("Sending server name: %s ip: %s player: %d port: %d online: no", it->second.mName,
-                         IPlongToString(it->second.mLanIp), it->second.mPlayers, it->second.mPort);
+                         Misc::uint32ToIp4String(it->second.mLanIp), it->second.mPlayers, it->second.mPort);
           *(uint16_t *)&SERVERLIST[11] = 0;
       }
       Socket->write(SERVERLIST, sizeof(SERVERLIST));

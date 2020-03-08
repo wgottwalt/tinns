@@ -6,7 +6,7 @@
 
 void PNPC::PushUpdateTimer()
 {
-    mNextUpdate = Time::nowTimeT() + GetRandom(NPC_HEARTBEAT_MAX, NPC_HEARTBEAT_MIN);
+    mNextUpdate = Time::nowTimeT() + Misc::GetRandom(NPC_HEARTBEAT_MAX, NPC_HEARTBEAT_MIN);
 };
 
 // Reload LUA script while running, in case we modified it and dont want to restart the entire server
@@ -34,8 +34,8 @@ bool PNPC::DEF_Load(uint32_t nWorldID)
 
     // TODO: Find out what exactly these TypeID and ClothingID values do and where they are generated/read
     // Possible (working) solution: Random seed for name generation that happens clientside
-    mTypeID = GetRandom(32767, 1);
-    mClothing = GetRandom(32767, 1);
+    mTypeID = Misc::GetRandom(32767, 1);
+    mClothing = Misc::GetRandom(32767, 1);
     // -------------
 
     mPosX = t_defNPC->GetPosX()+32768;
@@ -55,7 +55,7 @@ bool PNPC::DEF_Load(uint32_t nWorldID)
 
     // Load dialogscript for this NPC right uppon startup
     mDialogScript = t_NpcTypeDef->GetDialogScript();
-    CleanUpString(&mDialogScript);
+    Misc::cleanUpString(mDialogScript);
 
     // Try to load any lua scripts
     // Checks are done in target function
@@ -151,7 +151,7 @@ bool PNPC::SQL_Load()
                 t_dialogscript.replace(tfound, 1, " ");
                 tfound = t_dialogscript.find( t_replacechr, tfound +1 );
             }
-            Trim(&t_dialogscript);
+            t_dialogscript = Misc::trim(t_dialogscript);
             if(t_dialogscript.length() > 1)
             {
                 mDialogScript = t_dialogscript;
@@ -355,7 +355,7 @@ void PNPC::InitVars()
     // Set next update timer for this NPC to 10 - 30 seconds
     // Note: this is for regular heartbeats only. If npc is dirty,
     // an update is sent anyway
-    mNextUpdate = Time::nowTimeT() + GetRandom(30, 10);
+    mNextUpdate = Time::nowTimeT() + Misc::GetRandom(30, 10);
  }
 
 void PNPC::Attack( uint32_t nWorldID, uint8_t nType, uint8_t nUnknown )
@@ -412,7 +412,7 @@ PNPC::PNPC( int nDEFID, uint32_t nWorldID )
 // Broadcast a single NPC
 void PNPCWorld::BroadcastNewNPC(PNPC* nNpc)
 {
-    std::string tAngleStr = Ssprintf( "%d", nNpc->mAngle );
+    std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
     PMessage* tmpMsg = MsgBuilder->BuildNPCMassInfoMsg (nNpc->mWorldID, nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                         nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                         &nNpc->mName, &nNpc->mCustomName);
@@ -460,7 +460,7 @@ void PNPCWorld::DelNPC(uint32_t nWorldID)
 
 void PNPCWorld::SendSingleNPCInfo( PClient* nClient, PNPC* nNpc )
 {
-    std::string tAngleStr = Ssprintf( "%d", nNpc->mAngle );
+    std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
     PMessage* tmpMsg = MsgBuilder->BuildNPCSingleInfoMsg (nClient, nNpc->GetRealWorldID(), nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                         nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                         &nNpc->mName, &nNpc->mCustomName);
@@ -476,7 +476,7 @@ void PNPCWorld::SendSingleNPCInfo( PClient* nClient, PNPC* nNpc )
     {
         nNpc = it->second;
 
-        std::string tAngleStr = Ssprintf( "%d", nNpc->mAngle );
+        std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
         PMessage* tmpMsg = MsgBuilder->BuildNPCSingleInfoMsg (nClient, nNpc->GetRealWorldID(), nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                             nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                             &nNpc->mName, &nNpc->mCustomName);

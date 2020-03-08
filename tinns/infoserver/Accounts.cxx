@@ -348,15 +348,15 @@ bool PAccount::Save(bool CreateMode)
   std::string Query;
   Query = CreateMode ? "INSERT INTO" : "UPDATE";
   Query += " accounts SET ";
-  Query += Ssprintf(" a_username='%s', a_password = '%s'", escUsername, escPassword);
-  Query += Ssprintf(", a_priv = %d, a_status = %d, a_bandate = %d", mLevel, mStatus, mBannedUntil);
+  Query += Misc::Ssprintf(" a_username='%s', a_password = '%s'", escUsername, escPassword);
+  Query += Misc::Ssprintf(", a_priv = %d, a_status = %d, a_bandate = %d", mLevel, mStatus, mBannedUntil);
   if(!CreateMode )
   {
-    Query += Ssprintf(" a_lastused = NOW()");
-    Query += Ssprintf(" WHERE a_id = %d LIMIT 1", mID);
+    Query += Misc::Ssprintf(" a_lastused = NOW()");
+    Query += Misc::Ssprintf(" WHERE a_id = %d LIMIT 1", mID);
   }
   else
-    Query += Ssprintf(" a_creationdate = NOW()");
+    Query += Misc::Ssprintf(" a_creationdate = NOW()");
 
   //if(MySQL->InfoQuery(Query.c_str()))
   if(MySQL->Query(Query.c_str()))
@@ -401,5 +401,5 @@ std::string PAccount::GetBannedTime() const
     type = 0;
   }
 
-  return Ssprintf("%d more %s", counter, unit[type]);
+  return Misc::Ssprintf("%d more %s", counter, unit[type]);
 }

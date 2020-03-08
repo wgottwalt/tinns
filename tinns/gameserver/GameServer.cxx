@@ -48,7 +48,7 @@ void PGameServer::Start()
   if ( !clock_gettime( CLOCK_REALTIME, &tmpTime ) )
   {
     srandom(( uint32_t )tmpTime.tv_sec );
-    InitRandom( tmpTime.tv_sec );
+    Misc::InitRandom( tmpTime.tv_sec );
 //Console->Print("Initializing random generator. First value is %d", random());
   }
 
@@ -692,7 +692,7 @@ bool PGameServer::HandleGameInfo( PClient *Client, PGameState *State, const uint
   {
     //int PortFix = Config->GetOptionInt("debug_mode");
 
-    ConnectionUDP* udpConn = ServerSock->getUDPConnection( IPStringToDWord( Client->GetAddress() ), Client->GetRemoteUDPPort() );
+    ConnectionUDP* udpConn = ServerSock->getUDPConnection( Misc::ip4StringToUint32( Client->GetAddress() ), Client->GetRemoteUDPPort() );
     Client->setUDPConnection( udpConn );
     if ( !udpConn )
     {
@@ -723,7 +723,7 @@ bool PGameServer::HandleGameInfo( PClient *Client, PGameState *State, const uint
     {
       IPServerString = Config->GetOption( "server_ip" );
     }
-    IP = IPStringToDWord( IPServerString.c_str() );
+    IP = Misc::ip4StringToUint32(IPServerString);
 //Console->Print("IP-1 %d", IP);
     if ( IP == 0 )
       IP = 0x0100007f;

@@ -65,10 +65,10 @@ void PItem::MakeItemStandard(uint8_t GlobalQualityMin, uint8_t GlobalQualityMax)
   }
   else
   {
-    mDamages = (uint8_t) GetRandom(GlobalQualityMax, GlobalQualityMin);
-    mFrequency = (uint8_t) GetRandom(GlobalQualityMax, GlobalQualityMin);
-    mHandling = (uint8_t) GetRandom(GlobalQualityMax, GlobalQualityMin);
-    mRange = (uint8_t) GetRandom(GlobalQualityMax, GlobalQualityMin);
+    mDamages = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
+    mFrequency = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
+    mHandling = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
+    mRange = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
   }
 }
 

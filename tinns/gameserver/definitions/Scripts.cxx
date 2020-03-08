@@ -19,15 +19,15 @@ bool PDefScripts::LoadFromDef( PTokenList *Tokens )
         mIndex = atoi(i->c_str()); break;
       case 2 :
         mIdentifier = *i;
-        CleanUpString(&mIdentifier);
+        Misc::cleanUpString(mIdentifier);
         break;
       case 3 :
         mLuaFile = *i;
-        CleanUpString(&mLuaFile);
+        Misc::cleanUpString(mLuaFile);
         break;
       case 4 :
         mScriptHeader = *i;
-        CleanUpString(&mScriptHeader);
+        Misc::cleanUpString(mScriptHeader);
         break;
         continue;
     }

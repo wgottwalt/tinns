@@ -1469,8 +1469,7 @@ PMessage* PMsgBuilder::BuildNPCStartDialogMsg( PClient* nClient, uint32_t nNPCWo
  {
     PMessage* tmpMsg = new PMessage();
     nClient->IncreaseUDP_ID();
- 
- 
+
     *tmpMsg << ( uint8_t )0x13;
     *tmpMsg << ( uint16_t ) 0x0000; // UDP Placeholder
     *tmpMsg << ( uint16_t ) 0x0000; // UDP Placeholder
@@ -1481,16 +1480,16 @@ PMessage* PMsgBuilder::BuildNPCStartDialogMsg( PClient* nClient, uint32_t nNPCWo
     *tmpMsg << ( uint16_t )nClient->GetLocalID();
     *tmpMsg << ( uint8_t )0x18;
     *tmpMsg << ( uint32_t ) nNPCWorldID;
- 
+
     // Todo: is this correct? random uint32_t value??
-    *tmpMsg << ( uint16_t ) GetRandom( 65535, 4369 );
-    *tmpMsg << ( uint16_t ) GetRandom( 65535, 4369 );
+    *tmpMsg << ( uint16_t ) Misc::GetRandom( 65535, 4369 );
+    *tmpMsg << ( uint16_t ) Misc::GetRandom( 65535, 4369 );
     *tmpMsg << ( uint32_t ) 0x0000;
     *tmpMsg << nDialogScript->c_str();
     ( *tmpMsg )[5] = ( uint8_t )( tmpMsg->GetSize() - 6 );
- 
+
     nClient->IncreaseUDP_ID();
- 
+
     *tmpMsg << ( uint8_t )0x0a;
     *tmpMsg << ( uint8_t )0x03;
     *tmpMsg << ( uint16_t )nClient->GetUDP_ID();
@@ -1500,10 +1499,10 @@ PMessage* PMsgBuilder::BuildNPCStartDialogMsg( PClient* nClient, uint32_t nNPCWo
     *tmpMsg << ( uint8_t )0x00;
     *tmpMsg << ( uint8_t )0x00;
     *tmpMsg << ( uint8_t )0x00;
- 
+
     tmpMsg->U16Data( 1 ) = nClient->GetUDP_ID();
     tmpMsg->U16Data( 3 ) = nClient->GetSessionID();
- 
+
     return tmpMsg;
  }
 // NPC Dialog. Send next node number in lua script to client

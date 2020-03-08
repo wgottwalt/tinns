@@ -137,7 +137,7 @@ void PChat::sendLocal(PClient* author, const char* text, bool debugOut)
             PChar* receiverChar = Chars->GetChar(receiver->GetCharID());
             if(receiverChar && (receiverChar->GetLocation() == ZID))
             {
-                uint16_t distance = DistanceApprox((authorChar->Coords).mX, (authorChar->Coords).mY, (authorChar->Coords).mZ, (receiverChar->Coords).mX, (receiverChar->Coords).mY, (receiverChar->Coords).mZ);
+                uint16_t distance = Misc::DistanceApprox((authorChar->Coords).mX, (authorChar->Coords).mY, (authorChar->Coords).mZ, (receiverChar->Coords).mX, (receiverChar->Coords).mY, (receiverChar->Coords).mZ);
                 if(distance < LOCALCHAT_MAXDISTANCE)
                 {
                     //sendLocalchat(receiver, author, text, debugOut); // Doesnt work!

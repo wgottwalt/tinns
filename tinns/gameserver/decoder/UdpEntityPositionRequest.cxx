@@ -22,7 +22,7 @@ PUdpMsgAnalyser* PUdpEntityPosRequest::Analyse()
   if(mEntityID >= WORLDDATATEMPLATE_MAXPOSITEMS)
   {
     mDecodeData->mState = DECODE_ACTION_READY | DECODE_FINISHED;
-    mDecodeData->mErrorDetail = Ssprintf("Invalid position entity ID (%d)", mEntityID);
+    mDecodeData->mErrorDetail = Misc::Ssprintf("Invalid position entity ID (%d)", mEntityID);
     Console->Print("%s Client[%d] sent invalid position entity Id[%d]", Console->ColorText(YELLOW, BLACK, "[Notice]"), mDecodeData->mClient->GetID(), mEntityID);
     mDecodeData->mTraceDump = true;
   }

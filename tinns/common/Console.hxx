@@ -3,7 +3,7 @@
 #include <chrono>
 #include <fstream>
 
-enum COLORS {
+enum COLORS : uint8_t {
     BLACK,
     RED,
     GREEN,
