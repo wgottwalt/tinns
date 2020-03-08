@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include <string>
 
 namespace Misc
@@ -16,8 +17,20 @@ namespace Misc
     std::string trim(const std::string &data, const char delim, const bool at_start = true,
                      const bool at_end = true);
     std::string trim(const std::string &data, const bool at_start = true, const bool at_end = true);
-
     std::string &Ssprintf(const char *fmt, ...);
+
+    template <typename H, typename... T>
+    std::string str(const H &head, const T &...tail)
+    {
+        std::stringstream strm;
+
+        if constexpr (sizeof... (T))
+            strm << head << str(tail...);
+        else
+            strm << head;
+
+        return strm.str();
+    }
 
     uint16_t DistanceApprox(const uint16_t x1, const uint16_t y1, const uint16_t z1,
                             const uint16_t x2, const uint16_t y2, const uint16_t z2);
