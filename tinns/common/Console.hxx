@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <fstream>
+#include <string>
 
 enum COLORS : uint8_t {
     BLACK,
@@ -15,13 +16,18 @@ enum COLORS : uint8_t {
 };
 
 class PConsole {
-private:
-	std::ofstream mLogFile;
-	time_t mLastLogTime;
-
 public:
-	PConsole(const char *nLogFile);
+    //--- public constructors ---
+	PConsole(const std::string &logfile);
+    PConsole(const PConsole &rhs) = delete;
+    PConsole(PConsole &&rhs) = delete;
 	~PConsole();
+
+    //--- public operators ---
+    PConsole &operator=(const PConsole &rhs) = delete;
+    PConsole &operator=(PConsole &&rhs) = delete;
+
+    //--- public methods ---
 	void Print(const char *Fmt_, ...);
 	void Print(COLORS foreground, COLORS background, const char *Fmt_, ...);
 	char *ColorText(COLORS foreground, COLORS background, const char *Fmt, ...);
@@ -30,6 +36,16 @@ public:
 	void LPrint(COLORS foreground, COLORS background, const char *Fmt_, ...);
 	void LClose();
 	void Update();
+
+protected:
+    //--- protected methods ---
+    const std::string color(const COLORS fg, const COLORS bg) const;
+    const std::string reset() const;
+
+private:
+    //--- private properties ---
+    std::ofstream _logfile;
+    time_t _lastlogtime;
 };
 
 extern class PConsole *Console;
