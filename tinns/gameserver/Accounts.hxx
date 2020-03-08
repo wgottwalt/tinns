@@ -63,7 +63,7 @@ class PAccount {
     PAccountStatus mStatus;
     time_t mBannedUntil;
 
-    bool LoadFromQuery(char* query);
+    bool LoadFromQuery(const std::string &query);
     bool DecodePassword(const uint8_t* PasswordData, int PassLen, const uint8_t *Key, char* ClearPassword);
 
     public :

@@ -43,9 +43,12 @@ if (gDevDebug) Console->Print("Choosed Apt of type %d in place %d", CandidateApt
 
     char escPassword[256];
     MySQL->EscapeString(nPassword.c_str(), escPassword, 256);
-    char query[256];
-    snprintf(query, 256, "INSERT INTO apartments (apt_id,apt_location,apt_type,apt_password, apt_owner) VALUES (NULL,'%d','%d','%s','%d');", CandidateApts[j].second, CandidateApts[j].first, escPassword, nCharID);
-    if ( MySQL->GameQuery(query) )
+    std::string query;
+    query.append("INSERT INTO apartments (apt_id,apt_location,apt_type,apt_password, apt_owner) VALUES (NULL,'")
+         .append(std::to_string(CandidateApts[j].second)).append("','")
+         .append(std::to_string(CandidateApts[j].first)).append("','").append(escPassword)
+         .append("','").append(std::to_string(nCharID));
+    if ( MySQL->GameQuery(query.c_str()) )
     {
         Console->Print(RED, BLACK, "PAppartements::CreateBaseAppartement could not add some appartement entry in the database");
         Console->Print("Query was:");
@@ -87,15 +90,17 @@ int PAppartements::GetAptID(unsigned int AptLoc, const uint8_t *pass)
     int type;
     MYSQL_RES *result;
     MYSQL_ROW row;
-    char query[255];
+    std::string query;
 
     if(!strcmp((const char*)pass, "Exit"))
         return 1;
 
     char escPassword[255];
     MySQL->EscapeString((char*)pass, escPassword, 255);
-    snprintf(query, 255, "SELECT apt_id FROM apartments WHERE apt_location = %i AND apt_password = '%s'", AptLoc, escPassword);
-    result = MySQL->GameResQuery(query);
+    query.append("SELECT apt_id FROM apartments WHERE apt_location = ")
+         .append(std::to_string(AptLoc)).append(" AND apt_password = '").append(escPassword)
+         .append("'");
+    result = MySQL->GameResQuery(query.c_str());
 
     if(!result)
     {

@@ -1224,25 +1224,26 @@ PChar* PChars::GetChar( const std::string &Name ) const
 
 bool PChars::CharExist( const std::string &Name ) const
 {
-  char query[256];
-  int EntriesNb;
-  MYSQL_RES *result = 0;
+    std::string query;
+    int EntriesNb;
+    MYSQL_RES *result = 0;
 
-  char escUsername[256];
-  MySQL->EscapeString( Name.c_str(), escUsername, 256 );
-  snprintf( query, 256, "SELECT 1 FROM characters WHERE c_name = '%s' LIMIT 1;", escUsername );
+    char escUsername[256];
+    MySQL->EscapeString( Name.c_str(), escUsername, 256 );
+    query.append("SELECT 1 FROM characters WHERE c_name = '").append(escUsername)
+         .append("' LIMIT 1;");
 
-  result = MySQL->GameResQuery( query );
-  if (result == nullptr)
-  {
-    Console->Print( RED, BLACK, "[ERROR] Failed to get CharacterData from SQL" );
-    MySQL->ShowGameSQLError();
-    return true;
-  }
+    result = MySQL->GameResQuery(query.c_str());
+    if (result == nullptr)
+    {
+        Console->Print( RED, BLACK, "[ERROR] Failed to get CharacterData from SQL" );
+        MySQL->ShowGameSQLError();
+        return true;
+    }
 
-  EntriesNb = mysql_num_rows( result );
-  MySQL->FreeGameSQLResult( result );
-  return( EntriesNb > 0 );
+    EntriesNb = mysql_num_rows( result );
+    MySQL->FreeGameSQLResult( result );
+    return( EntriesNb > 0 );
 }
 
 void PChars::Update()

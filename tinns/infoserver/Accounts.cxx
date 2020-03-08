@@ -99,17 +99,18 @@ PAccount::PAccount(const uint32_t AccountId)
 
 PAccount::PAccount(const char *Username)
 {
-  char query[256];
+  std::string query;
   mID = 0;
   if(IsUsernameWellFormed(Username)) {
     char escUsername[256];
     MySQL->EscapeString(Username, escUsername, 256);
-    snprintf(query, 256, "SELECT * FROM accounts WHERE a_username = '%s' LIMIT 1;", escUsername);
+    query.append("SELECT * FROM accounts WHERE a_username = '").append(escUsername)
+         .append("' LIMIT 1;");
     LoadFromQuery(query);
   }
 }
 
-bool PAccount::LoadFromQuery(char* query)
+bool PAccount::LoadFromQuery(const std::string &query)
 {
   MYSQL_ROW row = 0;
   MYSQL_RES *result = 0;
@@ -117,7 +118,7 @@ bool PAccount::LoadFromQuery(char* query)
   bool FinalResult = false;
 
   //result = MySQL->InfoResQuery(query);
-  result = MySQL->ResQuery(query);
+  result = MySQL->ResQuery(query.c_str());
   if(result == nullptr)
   {
       Console->Print(RED, BLACK, "Failed to load AccountData from SQL");

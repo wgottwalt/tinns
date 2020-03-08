@@ -319,6 +319,7 @@ bool PTerminal::HandleReceiveDB(PClient* nClient, uint16_t mTerminalSessionId, s
         if(!ChkOpt(nNumOptions, 1)) break;
         mResultFields = 1;
         snprintf (mSQLQuery, 500, "SELECT su_id FROM support WHERE su_supporterid = %d AND su_finished = 0", atoi(nOptions[0].c_str()));
+        break;
 
     case 131:
         mResultFields = 6;

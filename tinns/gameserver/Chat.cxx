@@ -70,11 +70,8 @@ void PChat::sendConnectedList(PClient* receiver, bool debugOut)
     // send the list of currently connected players to receiver
     for(PClientMap::iterator it=ClientManager->getClientListBegin(); it!=ClientManager->getClientListEnd(); it++)
     {
-          char counterText[5];
-          snprintf(counterText, 5, "%d", counter);
-
         PChar* receiverChar = Chars->GetChar(it->second->GetCharID());
-        send(receiver, CHAT_DIRECT, (receiverChar ? receiverChar->GetName().c_str() : "*"), counterText, debugOut);
+        send(receiver, CHAT_DIRECT, (receiverChar ? receiverChar->GetName().c_str() : "*"), std::to_string(counter).c_str(), debugOut);
 
         counter++;
     }
