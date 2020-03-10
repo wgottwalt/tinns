@@ -1482,8 +1482,8 @@ PMessage* PMsgBuilder::BuildNPCStartDialogMsg( PClient* nClient, uint32_t nNPCWo
     *tmpMsg << ( uint32_t ) nNPCWorldID;
 
     // Todo: is this correct? random uint32_t value??
-    *tmpMsg << ( uint16_t ) Misc::GetRandom( 65535, 4369 );
-    *tmpMsg << ( uint16_t ) Misc::GetRandom( 65535, 4369 );
+    *tmpMsg << Misc::Random::get(65535u, 4369u);
+    *tmpMsg << Misc::Random::get(65535u, 4369u);
     *tmpMsg << ( uint32_t ) 0x0000;
     *tmpMsg << nDialogScript->c_str();
     ( *tmpMsg )[5] = ( uint8_t )( tmpMsg->GetSize() - 6 );
@@ -1509,14 +1509,14 @@ PMessage* PMsgBuilder::BuildNPCStartDialogMsg( PClient* nClient, uint32_t nNPCWo
 PMessage* PMsgBuilder::BuildNPCDialogReplyMsg( PClient* nClient, uint16_t nNextNode, std::vector<int>*nResultBuffer)
  {
     PMessage* tmpMsg = new PMessage();
- 
+
     nClient->IncreaseUDP_ID();
- 
+
     *tmpMsg << ( uint8_t )0x13;
     *tmpMsg << ( uint16_t )nClient->GetUDP_ID();;
     *tmpMsg << ( uint16_t )nClient->GetSessionID();;
     *tmpMsg << ( uint8_t )0x00; // SubMessage length;
- 
+
     *tmpMsg << ( uint8_t )0x03;
     *tmpMsg << ( uint16_t )nClient->GetUDP_ID();;
     *tmpMsg << ( uint8_t )0x1f;
@@ -1525,16 +1525,16 @@ PMessage* PMsgBuilder::BuildNPCDialogReplyMsg( PClient* nClient, uint16_t nNextN
     *tmpMsg << ( uint16_t )nNextNode;
     //*tmpMsg << ( uint8_t )nNumResults;
     *tmpMsg << ( uint8_t )nResultBuffer->size();
- 
+
     std::vector<int>::const_iterator it;
- 
+
     for(it = nResultBuffer->begin(); it != nResultBuffer->end(); it++)
      {
         *tmpMsg << ( float )*(it);
      }
- 
+
     ( *tmpMsg )[5] = ( uint8_t )( tmpMsg->GetSize() - 6 );
- 
+
     return tmpMsg;
  }
 

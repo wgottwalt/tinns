@@ -75,7 +75,8 @@ bool PUdpVentureWarpConfirm::DoAction()
     uint32_t newLocation;
     do
     {
-      newLocation = Worlds->GetWorldIdFromWorldmap( Misc::GetRandom( PWorlds::mOutdoorWorldmapHSize, 0 ), Misc::GetRandom( PWorlds::mOutdoorWorldmapVSize, 0 ) );
+      newLocation = Worlds->GetWorldIdFromWorldmap(Misc::Random::get(PWorlds::mOutdoorWorldmapHSize),
+                                                   Misc::Random::get(PWorlds::mOutdoorWorldmapVSize));
     }
     while ( ! newLocation );
 

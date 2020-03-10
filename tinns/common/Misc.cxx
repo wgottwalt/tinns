@@ -121,26 +121,4 @@ namespace Misc
             return tmp;
         }
     }
-
-    /*** Portable pseudo-random number generator ***/
-    // until native standardized C++ lib support
-
-    uint32_t mInternalRand = 1;
-
-    void InitRandom( uint32_t nInitialisationValue )
-    {
-      mInternalRand = nInitialisationValue;
-    }
-
-    uint16_t GetRandom( uint16_t MaxVal, uint16_t MinVal )
-    {
-      mInternalRand = mInternalRand * 1103515245 + 12345; //from rand() manpage
-      return ( uint16_t )( MinVal + (( mInternalRand >> 16 ) % 32768 % ( MaxVal - MinVal + 1 ) ) );
-    }
-
-    float GetRandomFloat()
-    {
-      mInternalRand = mInternalRand * 1103515245 + 12345; //from rand() manpage
-      return (( float )(( mInternalRand >> 16 ) % 32768 ) / ( float )32768 );
-    }
 }

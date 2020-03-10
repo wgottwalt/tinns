@@ -36,7 +36,7 @@ if (gDevDebug) Console->Print("Added potential Apt of type %d in place %d", AppT
 
   if(CandidateApts.size())
   {
-    j = Misc::GetRandom(CandidateApts.size()-1);
+    j = Misc::Random::get(CandidateApts.size() - 1);
 if (gDevDebug) Console->Print("Apt n� %d chosen in %d for faction %d", j+1, CandidateApts.size(), nFactionID);
 
 if (gDevDebug) Console->Print("Choosed Apt of type %d in place %d", CandidateApts[j].first, CandidateApts[j].second);

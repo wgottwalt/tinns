@@ -44,13 +44,8 @@ void PGameServer::Start()
   SetGameTime(( 1000 / 10 )*3600*12 ); //Set initial time to 12:00 on 7 Jul 2789
 
   // Init random generator
-  struct timespec tmpTime;
-  if ( !clock_gettime( CLOCK_REALTIME, &tmpTime ) )
-  {
-    srandom(( uint32_t )tmpTime.tv_sec );
-    Misc::InitRandom( tmpTime.tv_sec );
+  Misc::Random::init();
 //Console->Print("Initializing random generator. First value is %d", random());
-  }
 
   if ( Config->GetOptionInt( "gameserver_udpport_max" ) - Config->GetOptionInt( "gameserver_udpport_min" ) + 1 < Config->GetOptionInt( "maxclients" ) )
   {

@@ -6,7 +6,7 @@
 
 void PNPC::PushUpdateTimer()
 {
-    mNextUpdate = Time::nowTimeT() + Misc::GetRandom(NPC_HEARTBEAT_MAX, NPC_HEARTBEAT_MIN);
+    mNextUpdate = Time::nowTimeT() + Misc::Random::get(NPC_HEARTBEAT_MAX, NPC_HEARTBEAT_MIN);
 };
 
 // Reload LUA script while running, in case we modified it and dont want to restart the entire server
@@ -34,8 +34,8 @@ bool PNPC::DEF_Load(uint32_t nWorldID)
 
     // TODO: Find out what exactly these TypeID and ClothingID values do and where they are generated/read
     // Possible (working) solution: Random seed for name generation that happens clientside
-    mTypeID = Misc::GetRandom(32767, 1);
-    mClothing = Misc::GetRandom(32767, 1);
+    mTypeID = Misc::Random::get(32767, 1);
+    mClothing = Misc::Random::get(32767, 1);
     // -------------
 
     mPosX = t_defNPC->GetPosX()+32768;
@@ -355,7 +355,7 @@ void PNPC::InitVars()
     // Set next update timer for this NPC to 10 - 30 seconds
     // Note: this is for regular heartbeats only. If npc is dirty,
     // an update is sent anyway
-    mNextUpdate = Time::nowTimeT() + Misc::GetRandom(30, 10);
+    mNextUpdate = Time::nowTimeT() + Misc::Random::get(30, 10);
  }
 
 void PNPC::Attack( uint32_t nWorldID, uint8_t nType, uint8_t nUnknown )

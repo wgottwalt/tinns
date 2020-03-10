@@ -523,7 +523,7 @@ uint8_t PContainer::RandomFill( uint8_t nItemCount, int nItemContainerDefIndex )
 
     for ( uint8_t i = 0; i < nItemCount; ++i )
     {
-      nItemSeqId = Misc::GetRandom( NumItemsDefs, 1 );
+      nItemSeqId = Misc::Random::get(NumItemsDefs, 1);
 
       if (( nItemDef = GameDefs->Items()->GetDefBySeqIndex( nItemSeqId ) ) )
       {

@@ -306,7 +306,7 @@ bool PUdpCharExitChair::DoLeaveChair( PChar* nChar, PClient* nClient, PSpawnedVe
     {
       if ( Subway->IsDoorOpen( cSeatObjectId, tNowTime ) || nForce )
       {
-        Subway->GetStationExitPosition( &( nChar->Coords ), Subway->GetStation( cSeatObjectId, tNowTime ), Misc::GetRandomFloat() );
+        Subway->GetStationExitPosition( &( nChar->Coords ), Subway->GetStation( cSeatObjectId, tNowTime ), Misc::Random::getFloat() );
         Subway->UnsetSeatUser( cSeatObjectId, cSeatId, nChar->GetID() );
         nChar->SetSeatInUse( seat_none );
         ReadyToExit = true;

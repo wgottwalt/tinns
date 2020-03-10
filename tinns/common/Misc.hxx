@@ -1,8 +1,10 @@
 #pragma once
 
+#include <chrono>
+#include <initializer_list>
+#include <random>
 #include <sstream>
 #include <string>
-#include <tuple>
 
 namespace Misc
 {
@@ -79,8 +81,39 @@ namespace Misc
         }
     }
 
-    void InitRandom(uint32_t nInitialisationValue);
-    // u16 value between MinVal and MaxVal (inclusive) with max range 32768
-    uint16_t GetRandom(uint16_t MaxVal, uint16_t MinVal = 0);
-    float GetRandomFloat(); // f32 value between 0 and 1
+    namespace Random
+    {
+        static std::default_random_engine __generator;
+
+        template <typename T = int64_t>
+        void init(const std::initializer_list<T> &numbers =
+                  { std::chrono::high_resolution_clock::now().time_since_epoch().count() })
+        {
+            std::seed_seq seed(numbers.begin(), numbers.end());
+            __generator.seed(seed);
+        }
+
+        template <typename T>
+        constexpr T get(const T max, const T min = 0)
+        {
+            if constexpr (std::is_integral<T>::value)
+            {
+                std::uniform_int_distribution<T> distribution(min, max);
+                return distribution(__generator);
+            }
+            else if constexpr (std::is_floating_point<T>::value)
+            {
+                std::uniform_real_distribution<T> distribution(min, max);
+                return distribution(__generator);
+            }
+            else
+                throw "BAMM";
+        }
+
+        template <typename T = float>
+        constexpr T getFloat(const T max = 1.0, const T min = 0.0)
+        {
+            return get(max, min);
+        }
+    }
 }

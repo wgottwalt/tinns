@@ -105,7 +105,7 @@ int npcscript_callback(lua_State *nLua)
     {
         int tRange = lua_tointeger(nLua, 3);
 
-        int tRandomVal = Misc::GetRandom(tRange, 0);
+        int tRandomVal = Misc::Random::get(tRange);
         LuaEngine->AddScriptResult(tRandomVal);
         if (gDevDebug) Console->Print("RAND(%d) from script. Result: %d", tRange, tRandomVal);
     }
@@ -117,7 +117,7 @@ int npcscript_callback(lua_State *nLua)
         int tItemID = lua_tointeger(nLua, 3);
         // Check if player has item ID tItemID and take it away
         // No clean way to take item away yet, fake answer until then.
-        int tRes = Misc::GetRandom (1, 0);
+        int tRes = Misc::Random::get(1);
         LuaEngine->AddScriptResult(tRes); // TakeItem was SUCCESSFULL
 
         if (gDevDebug) Console->Print("TAKEITEM(%d) from script. Random result: %d", tItemID, tRes);

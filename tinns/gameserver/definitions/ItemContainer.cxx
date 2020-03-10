@@ -71,7 +71,7 @@ int PDefItemContainer::GetRandomItemIdx() const
 
   if(mNumItems > 0)
   {
-    int randomValue = Misc::GetRandom( mCumulatedChance[mNumItems-1], 1 );
+    int randomValue = Misc::Random::get(mCumulatedChance[mNumItems-1], 1);
     for(i = 0; i < mNumItems; ++i)
     {
       if(randomValue <= mCumulatedChance[i])

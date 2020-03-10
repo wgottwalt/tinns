@@ -52,24 +52,25 @@ PItem::PItem(uint32_t ItemID, uint8_t nStackSize, uint8_t CurDur, uint8_t MaxDur
 
 void PItem::MakeItemStandard(uint8_t GlobalQualityMin, uint8_t GlobalQualityMax)
 {
-  if(GlobalQualityMin > GlobalQualityMax) GlobalQualityMin = GlobalQualityMax;
+    if (GlobalQualityMin > GlobalQualityMax)
+        GlobalQualityMin = GlobalQualityMax;
 
-  mCurDuration = 255;
-  mMaxDuration = 255;
-  if(GlobalQualityMin == GlobalQualityMax)
-  {
-    mDamages = GlobalQualityMin;
-    mFrequency = GlobalQualityMin;
-    mHandling = GlobalQualityMin;
-    mRange = GlobalQualityMin;
-  }
-  else
-  {
-    mDamages = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
-    mFrequency = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
-    mHandling = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
-    mRange = static_cast<uint8_t>(Misc::GetRandom(GlobalQualityMax, GlobalQualityMin));
-  }
+    mCurDuration = 255;
+    mMaxDuration = 255;
+    if(GlobalQualityMin == GlobalQualityMax)
+    {
+        mDamages = GlobalQualityMin;
+        mFrequency = GlobalQualityMin;
+        mHandling = GlobalQualityMin;
+        mRange = GlobalQualityMin;
+    }
+    else
+    {
+        mDamages = Misc::Random::get(GlobalQualityMax, GlobalQualityMin);
+        mFrequency = Misc::Random::get(GlobalQualityMax, GlobalQualityMin);
+        mHandling = Misc::Random::get(GlobalQualityMax, GlobalQualityMin);
+        mRange = Misc::Random::get(GlobalQualityMax, GlobalQualityMin);
+    }
 }
 
 uint32_t PItem::GetItemID()

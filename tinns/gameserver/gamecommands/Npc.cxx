@@ -146,8 +146,8 @@ void PCommands::doNPC()
         /*-------------------------------------------------------*/
         char tSql2[500];
         snprintf(tSql2, 500, "INSERT INTO npc_spawns (npc_worldid, npc_nameid, npc_typeid, npc_name, npc_location, npc_x, npc_y, npc_z, npc_angle, npc_clothing, npc_loot, npc_unknown, npc_trader, npc_customname) VALUES (%d, %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, \"%s\")",
-            tNewWorldID, tSpawnID, Misc::GetRandom(65000, 1000), tNPCScript.c_str(), tLocation, tNPCPosX, tNPCPosY, tNPCPosZ, atoi(tNPCAngle.c_str()),
-            Misc::GetRandom(65000, 1000), t_defNpc->GetLoot(), tNPCHealth, 0, tCustomName);
+            tNewWorldID, tSpawnID, Misc::Random::get(65000, 1000), tNPCScript.c_str(), tLocation, tNPCPosX, tNPCPosY, tNPCPosZ, atoi(tNPCAngle.c_str()),
+            Misc::Random::get(65000, 1000), t_defNpc->GetLoot(), tNPCHealth, 0, tCustomName);
 
         if(MySQL->GameQuery(tSql2))
         {
