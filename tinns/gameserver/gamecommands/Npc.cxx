@@ -117,7 +117,7 @@ void PCommands::doNPC()
         uint32_t tLocation = source->GetChar()->GetLocation();
 
         uint8_t tAngle = source->GetChar()->Coords.mLR;
-        std::string tNPCAngle = Misc::Ssprintf( "%d", tAngle );
+        std::string tNPCAngle = std::to_string(tAngle);
 
         std::string tNPCScript = t_defNpc->GetStandardScript();
         uint32_t tNPCHealth = t_defNpc->GetHealth() * NPC_HEALTHFACTOR;

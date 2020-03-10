@@ -32,7 +32,7 @@ bool PDefNpc::LoadFromDef( PTokenList *Tokens )
         mWeaponId = atoi( i->c_str() ); break;
       case 10 :
         mDialogScript = *i;
-        Misc::cleanUpString(mDialogScript);
+        Misc::String::cleanUpString(mDialogScript);
         break;
       case 11 :
         mCombat = atoi( i->c_str() ); break;
@@ -50,11 +50,11 @@ bool PDefNpc::LoadFromDef( PTokenList *Tokens )
         mSkillScale = atof( i->c_str() ); break;
       case 18 :
         mStandardScript = *i;
-        Misc::cleanUpString(mStandardScript);
+        Misc::String::cleanUpString(mStandardScript);
         break;
       case 19 :
         mStandardParameter = *i;
-        Misc::cleanUpString(mStandardParameter);
+        Misc::String::cleanUpString(mStandardParameter);
         break;
       case 20 :
         mMass = atoi( i->c_str() ); break;

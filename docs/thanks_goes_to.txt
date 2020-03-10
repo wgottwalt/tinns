@@ -1,8 +1,10 @@
 This is a thank you to all people who worked on this project:
 - MaxxJag (check out his C version Neopolis)
-- Hammag
-- bakkdoor
-- Namikon
+- Hammag (coding)
+- bakkdoor (coding)
+- Namikon (coding)
+- Sting (packet capturing/analyzing)
+- balm (packet capturing/analyzing)
 
 There were much more people who contributed, but it's hard to remember.
 Just drop me a message on github, if I failed to mention you in here.

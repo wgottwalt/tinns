@@ -55,7 +55,7 @@ bool PNPC::DEF_Load(uint32_t nWorldID)
 
     // Load dialogscript for this NPC right uppon startup
     mDialogScript = t_NpcTypeDef->GetDialogScript();
-    Misc::cleanUpString(mDialogScript);
+    Misc::String::cleanUpString(mDialogScript);
 
     // Try to load any lua scripts
     // Checks are done in target function
@@ -151,7 +151,7 @@ bool PNPC::SQL_Load()
                 t_dialogscript.replace(tfound, 1, " ");
                 tfound = t_dialogscript.find( t_replacechr, tfound +1 );
             }
-            t_dialogscript = Misc::trim(t_dialogscript);
+            t_dialogscript = Misc::String::trim(t_dialogscript);
             if(t_dialogscript.length() > 1)
             {
                 mDialogScript = t_dialogscript;
@@ -412,12 +412,12 @@ PNPC::PNPC( int nDEFID, uint32_t nWorldID )
 // Broadcast a single NPC
 void PNPCWorld::BroadcastNewNPC(PNPC* nNpc)
 {
-    std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
+    std::string tAngleStr = std::to_string(nNpc->mAngle);
     PMessage* tmpMsg = MsgBuilder->BuildNPCMassInfoMsg (nNpc->mWorldID, nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                         nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                         &nNpc->mName, &nNpc->mCustomName);
 
-    ClientManager->UDPBroadcast( tmpMsg, mWorldID );
+    ClientManager->UDPBroadcast(tmpMsg, mWorldID);
 }
 
 
@@ -460,12 +460,12 @@ void PNPCWorld::DelNPC(uint32_t nWorldID)
 
 void PNPCWorld::SendSingleNPCInfo( PClient* nClient, PNPC* nNpc )
 {
-    std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
+    std::string tAngleStr = std::to_string(nNpc->mAngle);
     PMessage* tmpMsg = MsgBuilder->BuildNPCSingleInfoMsg (nClient, nNpc->GetRealWorldID(), nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                         nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                         &nNpc->mName, &nNpc->mCustomName);
 
-    nClient->SendUDPMessage( tmpMsg );
+    nClient->SendUDPMessage(tmpMsg);
     return;
 }
 
@@ -476,7 +476,7 @@ void PNPCWorld::SendSingleNPCInfo( PClient* nClient, PNPC* nNpc )
     {
         nNpc = it->second;
 
-        std::string tAngleStr = Misc::Ssprintf( "%d", nNpc->mAngle );
+        std::string tAngleStr = std::to_string(nNpc->mAngle);
         PMessage* tmpMsg = MsgBuilder->BuildNPCSingleInfoMsg (nClient, nNpc->GetRealWorldID(), nNpc->mTypeID, nNpc->mClothing, nNpc->mNameID, nNpc->mPosY,
                                                             nNpc->mPosZ, nNpc->mPosX, nNpc->mHealth, nNpc->mTrader, &tAngleStr,
                                                             &nNpc->mName, &nNpc->mCustomName);

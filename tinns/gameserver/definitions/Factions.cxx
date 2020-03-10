@@ -23,7 +23,7 @@ bool PDefFaction::LoadFromDef(PTokenList *Tokens)
 
             case 2 :
                 mName = *i;
-                Misc::cleanUpString(mName);
+                Misc::String::cleanUpString(mName);
                 break;
 
             case 3 :

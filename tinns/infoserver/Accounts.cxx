@@ -341,33 +341,34 @@ bool PAccount::Create()
 
 bool PAccount::Save(bool CreateMode)
 {
-  char escUsername[256];
-  char escPassword[256];
-  MySQL->EscapeString(mName.c_str(), escUsername, 256);
-  MySQL->EscapeString(mPassword.c_str(), escPassword, 256);
+    char escUsername[256];
+    char escPassword[256];
+    MySQL->EscapeString(mName.c_str(), escUsername, 256);
+    MySQL->EscapeString(mPassword.c_str(), escPassword, 256);
 
-  std::string Query;
-  Query = CreateMode ? "INSERT INTO" : "UPDATE";
-  Query += " accounts SET ";
-  Query += Misc::Ssprintf(" a_username='%s', a_password = '%s'", escUsername, escPassword);
-  Query += Misc::Ssprintf(", a_priv = %d, a_status = %d, a_bandate = %d", mLevel, mStatus, mBannedUntil);
-  if(!CreateMode )
-  {
-    Query += Misc::Ssprintf(" a_lastused = NOW()");
-    Query += Misc::Ssprintf(" WHERE a_id = %d LIMIT 1", mID);
-  }
-  else
-    Query += Misc::Ssprintf(" a_creationdate = NOW()");
+    std::string Query;
+    Query = (CreateMode ? "INSERT INTO" : "UPDATE");
+    Query += " accounts SET ";
+    Query += Misc::String::create(" a_username='", escUsername, "', a_password = '", escPassword, "'");
+    Query += Misc::String::create(", a_priv = ", mLevel, ", a_status = ", mStatus, ", a_bandate = ", mBannedUntil);
 
-  //if(MySQL->InfoQuery(Query.c_str()))
-  if(MySQL->Query(Query.c_str()))
-  {
-      Console->Print(RED, BLACK, "[Error] Failed to %s account %s (id %d)", CreateMode ? "create" : "update", mName.c_str(), mID);
-      //MySQL->ShowInfoSQLError();
-      MySQL->ShowSQLError();
-      return false;
-  }
-  return true;
+    if (!CreateMode)
+    {
+        Query += " a_lastused = NOW()";
+        Query += " WHERE a_id = " + std::to_string(mID) + " LIMIT 1";
+    }
+    else
+        Query += " a_creationdate = NOW()";
+
+    //if(MySQL->InfoQuery(Query.c_str()))
+    if (MySQL->Query(Query.c_str()))
+    {
+        Console->Print(RED, BLACK, "[Error] Failed to %s account %s (id %d)", CreateMode ? "create" : "update", mName.c_str(), mID);
+        //MySQL->ShowInfoSQLError();
+        MySQL->ShowSQLError();
+        return false;
+    }
+    return true;
 }
 
 std::string PAccount::GetBannedTime() const
@@ -402,5 +403,5 @@ std::string PAccount::GetBannedTime() const
     type = 0;
   }
 
-  return Misc::Ssprintf("%d more %s", counter, unit[type]);
+  return Misc::String::create(counter, " more ", unit[type]);
 }

@@ -321,11 +321,11 @@ bool PAccount::Save(bool CreateMode)
   std::string Query;
   Query = CreateMode ? "INSERT INTO" : "UPDATE";
   Query += "accounts SET ";
-  Query += Misc::Ssprintf(" accounts SET a_username='%s', a_password = '%s'", escUsername, escPassword);
-  Query += Misc::Ssprintf(", a_priv = %d, a_status = %d, a_bandate = %d", mLevel, mStatus, mBannedUntil);
+  Query += Misc::String::create("a_username='", escUsername, "', a_password = '", escPassword, "'");
+  Query += Misc::String::create(", a_priv = ", mLevel,", a_status = ", mStatus, ", a_bandate = ", mBannedUntil);
   if(!CreateMode )
   {
-    Query += Misc::Ssprintf(" WHERE a_id = %d LIMIT 1", mID);
+    Query += Misc::String::create(" WHERE a_id = ", mID, " LIMIT 1");
   }
 
   if(MySQL->InfoQuery(Query.c_str()))
@@ -422,5 +422,5 @@ std::string PAccount::GetBannedTime() const
     type = 0;
   }
 
-  return Misc::Ssprintf("%d more %s", counter, unit[type]);
+  return Misc::String::create(counter, " more ", unit[type]);
 }

@@ -122,10 +122,10 @@ bool PUdpReceiveDB::ActionVehicleListing()
       {
         EntryInfo = VhcList->front();
         VhcList->pop();
-        Answer[Index++] = Misc::Ssprintf( "%u", EntryInfo->GetVehicleId() ); //vhcId
-        Answer[Index++] = Misc::Ssprintf( "%u", EntryInfo->GetVehicleType() ); //vhcType
-        Answer[Index++] = Misc::Ssprintf( "%u", EntryInfo->GetStatus() ); //vhcStatus 0:parking, 1:in_service, 2:destroyed
-        Answer[Index++] = Misc::Ssprintf( "%u", EntryInfo->GetHealth() ); //vhcHealth%
+        Answer[Index++] = std::to_string(EntryInfo->GetVehicleId());
+        Answer[Index++] = std::to_string(EntryInfo->GetVehicleType());
+        Answer[Index++] = std::to_string(EntryInfo->GetStatus()); //vhcStatus 0:parking, 1:in_service, 2:destroyed
+        Answer[Index++] = std::to_string(EntryInfo->GetHealth());
 //Console->Print("Entry: %s/%s/%s/%s", Answer[Index-4].c_str(), Answer[Index-3].c_str(), Answer[Index-2].c_str(), Answer[Index-1].c_str());
         delete EntryInfo;
       }
@@ -180,10 +180,10 @@ bool PUdpReceiveDB::ActionVehicleControl()
     if ( Vehicles->GetVehicleInfo( VhcId, &EntryInfo ) )
     {
       std::string* Answer = new std::string[4];
-      Answer[0] = Misc::Ssprintf( "%u", EntryInfo.GetVehicleType() ); //vhcType
-      Answer[1] = Misc::Ssprintf( "%u", EntryInfo.GetStatus() ); //vhcStatus
-      Answer[2] = Misc::Ssprintf( "%u", EntryInfo.GetHealth() ); //vhcHealth%
-      Answer[3] = Misc::Ssprintf( "%u", ( 255 - EntryInfo.GetHealth() ) * 1000 * EntryInfo.GetVehicleType() / 255 ); //Repair cost
+      Answer[0] = std::to_string(EntryInfo.GetVehicleType());
+      Answer[1] = std::to_string(EntryInfo.GetStatus());
+      Answer[2] = std::to_string(EntryInfo.GetHealth());
+      Answer[3] = std::to_string((255 - EntryInfo.GetHealth()) * 1000 * EntryInfo.GetVehicleType() / 255); //Repair cost
       if ( gDevDebug )
         Console->Print( "%s Entry: %s/%s/%s/%s", Console->ColorText( CYAN, BLACK, "[DEBUG]" ), Answer[0].c_str(), Answer[1].c_str(), Answer[2].c_str(), Answer[3].c_str() );
       tmpMsg = MsgBuilder->BuildDBAnswerMsg( tClient, &mCommandName, Answer, 1, 4 );

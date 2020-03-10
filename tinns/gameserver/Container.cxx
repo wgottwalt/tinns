@@ -41,84 +41,78 @@ PContainerEntry::~PContainerEntry()
 
 bool PContainerEntry::SQLSave( uint32_t CharID, uint32_t InvLoc )
 {
-  std::string query, queryv;
+    const std::string queryv = Misc::String::create(" inv_charid='", CharID, "',inv_loc='", InvLoc,
+                               "',inv_x='", mPosX, "',inv_y='", mPosY, "',inv_itemid='",
+                               mItem->mItemID, "',inv_qty='", mItem->mStackSize, "',inv_type='", 0,
+                               "',inv_cdur='", mItem->mCurDuration, "',inv_dmg='", mItem->mDamages,
+                               "',inv_frq='", mItem->mFrequency, "',inv_hnd='", mItem->mHandling,
+                               "',inv_rng='", mItem->mRange, "'inv_mdur='", mItem->mMaxDuration,
+                               "'");
+    std::string query;
 
-  queryv += Misc::Ssprintf( " inv_charid='%u',inv_loc='%u',inv_x='%u',inv_y='%u'", CharID, InvLoc, mPosX, mPosY );
-  queryv += Misc::Ssprintf( ",inv_itemid='%u',inv_qty='%u'", mItem->mItemID, mItem->mStackSize );
-  //queryv += Misc::Ssprintf( ",inv_type='%u'", 0 );
-  queryv += Misc::Ssprintf( ",inv_cdur='%u'", mItem->mCurDuration );
-  queryv += Misc::Ssprintf( ",inv_dmg='%u'", mItem->mDamages );
-  queryv += Misc::Ssprintf( ",inv_frq='%u'", mItem->mFrequency );
-  queryv += Misc::Ssprintf( ",inv_hnd='%u'", mItem->mHandling );
-  queryv += Misc::Ssprintf( ",inv_rng='%u'", mItem->mRange );
-  queryv += Misc::Ssprintf( ",inv_mdur='%u'", mItem->mMaxDuration );
 
-  if ( mInvID )
-  {
-    query = "UPDATE inventory SET " + queryv;
-    query += Misc::Ssprintf( " WHERE inv_id='%u' LIMIT 1;", mInvID );
-  }
-  else
-  {
-    query = "INSERT INTO inventory SET " + queryv + ";";
-  }
+    if (mInvID)
+        query = "UPDATE inventory SET " + queryv + " WHERE inv_id='" + std::to_string(mInvID) +
+                "' LIMIT 1;";
+    else
+        query = "INSERT INTO inventory SET " + queryv + ";";
 
-  if ( MySQL->GameQuery( query.c_str() ) )
-  {
-    Console->Print( RED, BLACK, "PContainerEntry::SQLSave could not add/update some inventory item in the database" );
-    Console->Print( "Query was:" );
-    Console->Print( "%s", query.c_str() );
-    MySQL->ShowGameSQLError();
-    return false;
-  }
-  else
-  {
-    if ( !mInvID )
+    if (MySQL->GameQuery(query.c_str()))
     {
-      mInvID = MySQL->GetLastGameInsertId();
-      if ( gDevDebug )
-        Console->Print( GREEN, BLACK, "New item %d added to inventory DB", mInvID );
+        Console->Print(RED, BLACK, "PContainerEntry::SQLSave could not add/update some inventory item in the database");
+        Console->Print("Query was:");
+        Console->Print("%s", query.c_str());
+        MySQL->ShowGameSQLError();
+        return false;
     }
-//Console->Print(YELLOW, BLACK, "PContainerEntry::SQLSave - Query was:");
-//Console->Print(YELLOW, BLACK, "%s", query.c_str());
-    mDirtyFlag = false;
-    return true;
-  }
+    else
+    {
+        if (!mInvID)
+        {
+            mInvID = MySQL->GetLastGameInsertId();
+            if (gDevDebug)
+                Console->Print(GREEN, BLACK, "New item %d added to inventory DB", mInvID);
+        }
+        //Console->Print(YELLOW, BLACK, "PContainerEntry::SQLSave - Query was:");
+        //Console->Print(YELLOW, BLACK, "%s", query.c_str());
+        mDirtyFlag = false;
+        return true;
+    }
 }
 
 bool PContainerEntry::SQLDelete()
 {
-  std::string query;
+    std::string query;
 
-  if ( mInvID )
-  {
-    query = Misc::Ssprintf( "DELETE FROM inventory WHERE inv_id='%u' LIMIT 1;", mInvID );
-
-    if ( MySQL->GameQuery( query.c_str() ) )
+    if ( mInvID )
     {
-      Console->Print( RED, BLACK, "PContainerEntry::SQLDelete could not delete some container item from the database" );
-      Console->Print( "Query was:" );
-      Console->Print( "%s", query.c_str() );
-      MySQL->ShowGameSQLError();
-      return false;
+        query = "DELETE FROM inventory WHERE inv_id='" + std::to_string(mInvID) +  "' LIMIT 1;";
+
+        if (MySQL->GameQuery(query.c_str()))
+        {
+            Console->Print(RED, BLACK, "PContainerEntry::SQLDelete could not delete some container item from the database");
+            Console->Print("Query was:");
+            Console->Print("%s", query.c_str());
+            MySQL->ShowGameSQLError();
+            return false;
+        }
+        else
+        {
+            if (gDevDebug)
+                Console->Print(GREEN, BLACK, "Item %d deleted from container DB", mInvID);
+            mInvID = 0;
+            delete mItem;
+            mItem = nullptr;
+
+            mDirtyFlag = false;
+            return true;
+        }
     }
     else
     {
-      if ( gDevDebug )
-        Console->Print( GREEN, BLACK, "Item %d deleted from container DB", mInvID );
-      mInvID = 0;
-      delete mItem;
-      mItem = nullptr;
-
-      mDirtyFlag = false;
-      return true;
+        Console->Print(YELLOW, BLACK, "PContainerEntry::SQLDelete: Item was not in inventory DB");
+        return true;
     }
-  }
-  else
-  {
-    Console->Print( YELLOW, BLACK, "PContainerEntry::SQLDelete: Item was not in inventory DB" );
-    return true;
-  }
 }
 
 /* --- PContainer class --- */

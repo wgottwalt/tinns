@@ -666,58 +666,30 @@ bool PChar::SQLLoad( int CharID )
 
 bool PChar::SQLCreate() // Specific method for creation in order to avoid existence check with each save
 {
-  std::string query, queryv;
+    // c_legs ... c_model, c_type ... c_location
+    // v: mRealLegs ... mModel, mType ... mLocation
+    const std::string query = Misc::String::create("INSERT INTO characters (c_id,c_name,a_id,"
+                              "c_class,c_sex,c_profession,c_faction,c_head,c_torso,c_legs,"
+                              "c_location,c_cash,c_slot) VALUES (NULL,'", mName, "','", mAccount,
+                              "','", mClass, "','", mGender, "','", mProfession, "','", mFaction,
+                              "','", mRealHead, "','", mRealTorso, "','", mRealLegs, "','",
+                              mLocation, "','", mCash, "','", mSlot, "');");
 
-  query = "INSERT INTO characters (c_id";
-  queryv = ") VALUES (NULL";
-
-  query += ",c_name";
-  queryv = queryv + ",'" + mName + "'";
-
-  query += ",a_id";
-  queryv += Misc::Ssprintf( ",'%u'", mAccount );
-  query += ",c_class";
-  queryv += Misc::Ssprintf( ",'%u'", mClass );
-  query += ",c_sex";
-  queryv += Misc::Ssprintf( ",'%u'", mGender );
-  query += ",c_profession";
-  queryv += Misc::Ssprintf( ",'%u'", mProfession );
-  query += ",c_faction";
-  queryv += Misc::Ssprintf( ",'%u'", mFaction );
-  query += ",c_head";
-  queryv += Misc::Ssprintf( ",'%u'", mRealHead );
-  query += ",c_torso";
-  queryv += Misc::Ssprintf( ",'%u'", mRealTorso );
-  query += ",c_legs";
-  queryv += Misc::Ssprintf( ",'%u'", mRealLegs );
-  //query += ",c_model";
-  //queryv += Misc::Ssprintf(",'%u'", mModel);
-  //query += ",c_type";
-  //queryv += Misc::Ssprintf(",'%u'", mType);
-  query += ",c_location";
-  queryv += Misc::Ssprintf( ",'%u'", mLocation );
-  query += ",c_cash";
-  queryv += Misc::Ssprintf( ",'%u'", mCash );
-  query += ",c_slot";
-  queryv += Misc::Ssprintf( ",'%u'", mSlot );
-
-  query = query + queryv + ");";
-
-  if ( MySQL->GameQuery( query.c_str() ) )
-  {
-    Console->Print( RED, BLACK, "PChar::SQLCreate could not add char %s to database", mName.c_str() );
-    Console->Print( "Query was:" );
-    Console->Print( "%s", query.c_str() );
-    MySQL->ShowGameSQLError();
-    return false;
-  }
-  else
-  {
-    mID = MySQL->GetLastGameInsertId();
-//Console->Print(GREEN, BLACK, "New char %s got ID %d", mName.c_str(), mID);
-    mDirtyFlag = true;
-    return true;
-  }
+    if (MySQL->GameQuery(query.c_str()))
+    {
+        Console->Print(RED, BLACK, "PChar::SQLCreate could not add char %s to database", mName.c_str());
+        Console->Print("Query was:");
+        Console->Print("%s", query.c_str());
+        MySQL->ShowGameSQLError();
+        return false;
+    }
+    else
+    {
+        mID = MySQL->GetLastGameInsertId();
+        //Console->Print(GREEN, BLACK, "New char %s got ID %d", mName.c_str(), mID);
+        mDirtyFlag = true;
+        return true;
+    }
 }
 
 bool PChar::CreateNewChar( uint32_t Account, const std::string &Name, uint32_t Gender, uint32_t Profession, uint32_t Faction,
@@ -774,107 +746,86 @@ bool PChar::CreateNewChar( uint32_t Account, const std::string &Name, uint32_t G
 
 bool PChar::SQLSave()
 {
-  std::string query;
-  //std::string ts;
+    /* TODO:
+       - Mostly at creation/load :
+           c_apt, (or when first GR to primary apt to avoid creation of unused apt?)
+           (c_slot)
+       - At save/load :
+           SoulLight ???
+           FactionSymp[] ???
+           Chest change: style, brightness, color
+           Legs change: style, brightness, color
+           mHealt, mStamina, mMana (not in DB !!!)
+           How to compute MaxHealth etc. ?
+     */
+    const std::string query = Misc::String::create("UPDATE characters SET c_location='", mLocation,
+                              "',c_pos_x='", Coords.mX, "',c_pos_y='", Coords.mY, "',c_pos_z='",
+                              Coords.mZ, "',c_angle_ud='", Coords.mUD, "',c_angle_lr='", Coords.mLR,
+                              "',c_cash='", mCash, "',c_apt='", mPrimaryApt, "',c_head='",
+                              mRealHead, "',c_torso='", mRealTorso, "',c_legs='", mRealLegs,
+                              "',c_faction='", mFaction,
+#if 0
+    // This group of fiels shouldn't change in-game
+    query = query + ",c_name='" + mName + "'";
+    query += Misc::String::Ssprintf(",a_id='%u'", mAccount);
+    query += Misc::String::Ssprintf(",c_class='%u'", mClass);
+    query += Misc::String::Ssprintf(",c_sex='%u'", mGender);
+    query += Misc::String::Ssprintf(",c_profession='%u'", mProfession);
+    query += Misc::String::Ssprintf(",c_slot='%u'", mSlot);
+    query += Misc::String::Ssprintf(",c_model='%u'", mModel);
+    query += Misc::String::Ssprintf(",c_type='%u'", mType);
+#endif
+                              "',c_int_lvl='", Skill->GetMainSkill(MS_INT),
+                              "',c_con_lvl='", Skill->GetMainSkill(MS_CON),
+                              "',c_dex_lvl='", Skill->GetMainSkill(MS_DEX),
+                              "',c_str_lvl='", Skill->GetMainSkill(MS_STR),
+                              "',c_psi_lvl='", Skill->GetMainSkill(MS_PSI),
 
-  /* TODO:
-    - Mostly at creation/load :
-              c_apt, (or when first GR to primary apt to avoid creation of unused apt?)
-              (c_slot)
-    - At save/load :
-              SoulLight ???
-              FactionSymp[] ???
-              Chest change: style, brightness, color
-              Legs change: style, brightness, color
-              mHealt, mStamina, mMana (not in DB !!!)
-              How to compute MaxHealth etc. ?
-  */
-  query = "UPDATE characters SET";
+                              "',c_int_pts='", Skill->GetSP(MS_INT),
+                              "',c_con_pts='", Skill->GetSP(MS_CON),
+                              "',c_dex_pts='", Skill->GetSP(MS_DEX),
+                              "',c_str_pts='", Skill->GetSP(MS_STR),
+                              "',c_psi_pts='", Skill->GetSP(MS_PSI),
 
-  query += Misc::Ssprintf( " c_location='%u'", mLocation );
-  query += Misc::Ssprintf( ",c_pos_x='%u'", Coords.mX );
-  query += Misc::Ssprintf( ",c_pos_y='%u'", Coords.mY );
-  query += Misc::Ssprintf( ",c_pos_z='%u'", Coords.mZ );
-  query += Misc::Ssprintf( ",c_angle_ud='%u'", Coords.mUD );
-  query += Misc::Ssprintf( ",c_angle_lr='%u'", Coords.mLR );
-  query += Misc::Ssprintf( ",c_cash='%u'", mCash );
-  query += Misc::Ssprintf( ",c_apt='%u'", mPrimaryApt );
+                              "',c_int_xp='", Skill->GetXP(MS_INT),
+                              "',c_con_xp='", Skill->GetXP(MS_CON),
+                              "',c_dex_xp='", Skill->GetXP(MS_DEX),
+                              "',c_str_xp='", Skill->GetXP(MS_STR),
+                              "',c_psi_xp='", Skill->GetXP(MS_PSI),
 
-  query += Misc::Ssprintf( ",c_head='%u'", mRealHead );
-  query += Misc::Ssprintf( ",c_torso='%u'", mRealTorso );
-  query += Misc::Ssprintf( ",c_legs='%u'", mRealLegs );
-
-  query += Misc::Ssprintf( ",c_faction='%u'", mFaction );
-
-  /* This group of fiels shouldn't change in-game
-  query = query + ",c_name='" + mName + "'";
-  query += Misc::Ssprintf(",a_id='%u'", mAccount);
-  query += Misc::Ssprintf(",c_class='%u'", mClass);
-  query += Misc::Ssprintf(",c_sex='%u'", mGender);
-  query += Misc::Ssprintf(",c_profession='%u'", mProfession);
-  query += Misc::Ssprintf(",c_slot='%u'", mSlot);
-  query += Misc::Ssprintf(",c_model='%u'", mModel);
-  query += Misc::Ssprintf(",c_type='%u'", mType);
-  */
-
-  // ---------------------------------------------
-  // Saving skills --- MAIN Skills with SP and XP
-  // ---------------------------------------------
-  query += Misc::Ssprintf( ",c_int_lvl='%u'", Skill->GetMainSkill( MS_INT ) );
-  query += Misc::Ssprintf( ",c_con_lvl='%u'", Skill->GetMainSkill( MS_CON ) );
-  query += Misc::Ssprintf( ",c_dex_lvl='%u'", Skill->GetMainSkill( MS_DEX ) );
-  query += Misc::Ssprintf( ",c_str_lvl='%u'", Skill->GetMainSkill( MS_STR ) );
-  query += Misc::Ssprintf( ",c_psi_lvl='%u'", Skill->GetMainSkill( MS_PSI ) );
-  // ---------------------------------------------
-  query += Misc::Ssprintf( ",c_int_pts='%u'", Skill->GetSP( MS_INT ) );
-  query += Misc::Ssprintf( ",c_con_pts='%u'", Skill->GetSP( MS_CON ) );
-  query += Misc::Ssprintf( ",c_dex_pts='%u'", Skill->GetSP( MS_DEX ) );
-  query += Misc::Ssprintf( ",c_str_pts='%u'", Skill->GetSP( MS_STR ) );
-  query += Misc::Ssprintf( ",c_psi_pts='%u'", Skill->GetSP( MS_PSI ) );
-  // ---------------------------------------------
-  query += Misc::Ssprintf( ",c_int_xp='%u'", Skill->GetXP( MS_INT ) );
-  query += Misc::Ssprintf( ",c_con_xp='%u'", Skill->GetXP( MS_CON ) );
-  query += Misc::Ssprintf( ",c_dex_xp='%u'", Skill->GetXP( MS_DEX ) );
-  query += Misc::Ssprintf( ",c_str_xp='%u'", Skill->GetXP( MS_STR ) );
-  query += Misc::Ssprintf( ",c_psi_xp='%u'", Skill->GetXP( MS_PSI ) );
-  // ---------------------------------------------
-  // SubSkills
-  // ---------------------------------------------
-  query += Misc::Ssprintf( ",c_mc='%u'", Skill->GetSubSkill( SK_MC ) );
-  query += Misc::Ssprintf( ",c_hc='%u'", Skill->GetSubSkill( SK_HC ) );
-  query += Misc::Ssprintf( ",c_tra='%u'", Skill->GetSubSkill( SK_TRA ) );
-  query += Misc::Ssprintf( ",c_for='%u'", Skill->GetSubSkill( SK_FOR ) );
-  query += Misc::Ssprintf( ",c_pc='%u'", Skill->GetSubSkill( SK_PC ) );
-  query += Misc::Ssprintf( ",c_rc='%u'", Skill->GetSubSkill( SK_RC ) );
-  query += Misc::Ssprintf( ",c_tc='%u'", Skill->GetSubSkill( SK_TC ) );
-  query += Misc::Ssprintf( ",c_vhc='%u'", Skill->GetSubSkill( SK_VHC ) );
-  query += Misc::Ssprintf( ",c_agl='%u'", Skill->GetSubSkill( SK_AGL ) );
-  query += Misc::Ssprintf( ",c_rep='%u'", Skill->GetSubSkill( SK_REP ) );
-  query += Misc::Ssprintf( ",c_rec='%u'", Skill->GetSubSkill( SK_REC ) );
-  query += Misc::Ssprintf( ",c_rcl='%u'", Skill->GetSubSkill( SK_RCL ) );
-  query += Misc::Ssprintf( ",c_atl='%u'", Skill->GetSubSkill( SK_ATL ) );
-  query += Misc::Ssprintf( ",c_end='%u'", Skill->GetSubSkill( SK_END ) );
-  query += Misc::Ssprintf( ",c_fir='%u'", Skill->GetSubSkill( SK_FIR ) );
-  query += Misc::Ssprintf( ",c_enr='%u'", Skill->GetSubSkill( SK_ENR ) );
-  query += Misc::Ssprintf( ",c_xrr='%u'", Skill->GetSubSkill( SK_XRR ) );
-  query += Misc::Ssprintf( ",c_por='%u'", Skill->GetSubSkill( SK_POR ) );
-  query += Misc::Ssprintf( ",c_htl='%u'", Skill->GetSubSkill( SK_HLT ) );
-  query += Misc::Ssprintf( ",c_hck='%u'", Skill->GetSubSkill( SK_HCK ) );
-  query += Misc::Ssprintf( ",c_brt='%u'", Skill->GetSubSkill( SK_BRT ) );
-  query += Misc::Ssprintf( ",c_psu='%u'", Skill->GetSubSkill( SK_PSU ) );
-  query += Misc::Ssprintf( ",c_wep='%u'", Skill->GetSubSkill( SK_WEP ) );
-  query += Misc::Ssprintf( ",c_cst='%u'", Skill->GetSubSkill( SK_CST ) );
-  query += Misc::Ssprintf( ",c_res='%u'", Skill->GetSubSkill( SK_RES ) );
-  query += Misc::Ssprintf( ",c_imp='%u'", Skill->GetSubSkill( SK_IMP ) );
-  query += Misc::Ssprintf( ",c_ppu='%u'", Skill->GetSubSkill( SK_PPU ) );
-  query += Misc::Ssprintf( ",c_apu='%u'", Skill->GetSubSkill( SK_APU ) );
-  query += Misc::Ssprintf( ",c_mst='%u'", Skill->GetSubSkill( SK_MST ) );
-  query += Misc::Ssprintf( ",c_ppw='%u'", Skill->GetSubSkill( SK_PPW ) );
-  query += Misc::Ssprintf( ",c_psr='%u'", Skill->GetSubSkill( SK_PSR ) );
-  query += Misc::Ssprintf( ",c_wpw='%u'", Skill->GetSubSkill( SK_WPW ) );
-  // ---------------------------------------------
-
-  query += Misc::Ssprintf( " WHERE c_id='%u' LIMIT 1;", mID );
+                              "',c_mc='", Skill->GetSubSkill(SK_MC),
+                              "',c_hc='", Skill->GetSubSkill(SK_HC),
+                              "',c_tra='", Skill->GetSubSkill(SK_TRA),
+                              "',c_for='", Skill->GetSubSkill(SK_FOR),
+                              "',c_pc='", Skill->GetSubSkill(SK_PC),
+                              "',c_rc='", Skill->GetSubSkill(SK_RC),
+                              "',c_tc='", Skill->GetSubSkill(SK_TC),
+                              "',c_vhc='", Skill->GetSubSkill(SK_VHC),
+                              "',c_agl='", Skill->GetSubSkill(SK_AGL),
+                              "',c_rep='", Skill->GetSubSkill(SK_REP),
+                              "',c_rec='", Skill->GetSubSkill(SK_REC),
+                              "',c_rcl='", Skill->GetSubSkill(SK_RCL),
+                              "',c_atl='", Skill->GetSubSkill(SK_ATL),
+                              "',c_end='", Skill->GetSubSkill(SK_END),
+                              "',c_fir='", Skill->GetSubSkill(SK_FIR),
+                              "',c_enr='", Skill->GetSubSkill(SK_ENR),
+                              "',c_xrr='", Skill->GetSubSkill(SK_XRR),
+                              "',c_por='", Skill->GetSubSkill(SK_POR),
+                              "',c_htl='", Skill->GetSubSkill(SK_HLT),
+                              "',c_hck='", Skill->GetSubSkill(SK_HCK),
+                              "',c_brt='", Skill->GetSubSkill(SK_BRT),
+                              "',c_psu='", Skill->GetSubSkill(SK_PSU),
+                              "',c_wep='", Skill->GetSubSkill(SK_WEP),
+                              "',c_cst='", Skill->GetSubSkill(SK_CST),
+                              "',c_res='", Skill->GetSubSkill(SK_RES),
+                              "',c_imp='", Skill->GetSubSkill(SK_IMP),
+                              "',c_ppu='", Skill->GetSubSkill(SK_PPU),
+                              "',c_apu='", Skill->GetSubSkill(SK_APU),
+                              "',c_mst='", Skill->GetSubSkill(SK_MST),
+                              "',c_ppw='", Skill->GetSubSkill(SK_PPW),
+                              "',c_psr='", Skill->GetSubSkill(SK_PSR),
+                              "',c_wpw='", Skill->GetSubSkill(SK_WPW),
+                              " WHERE c_id='", mID, "' LIMIT 1;");
 
   if ( MySQL->GameQuery( query.c_str() ) )
   {

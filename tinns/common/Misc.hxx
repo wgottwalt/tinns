@@ -5,31 +5,43 @@
 
 namespace Misc
 {
-    uint32_t ip4StringToUint32(const std::string &ip);
-    const std::string uint32ToIp4String(const uint32_t ip);
-    std::string GetAccessString(int32_t level);
-    //void GetSVNRev(char *version);
-
-    void PrintPacket(uint8_t *Packet, int32_t PacketSize);
-
-    // Cleanup for strings read from .def
-    void cleanUpString(std::string &str);
-    std::string trim(const std::string &data, const char delim, const bool at_start = true,
-                     const bool at_end = true);
-    std::string trim(const std::string &data, const bool at_start = true, const bool at_end = true);
-    std::string &Ssprintf(const char *fmt, ...);
-
-    template <typename H, typename... T>
-    std::string str(const H &head, const T &...tail)
+    namespace Net
     {
-        std::stringstream strm;
+        struct IPv4 {
+            union {
+                uint32_t val;
+                uint8_t raw[sizeof (uint32_t)];
+                struct {
+                    uint8_t a, b, c, d;
+                };
+            };
+        };
 
-        if constexpr (sizeof... (T))
-            strm << head << str(tail...);
-        else
-            strm << head;
+        uint32_t ip4StringToUint32(const std::string &ip);
+        const std::string uint32ToIp4String(const uint32_t ip);
+    }
 
-        return strm.str();
+    namespace String
+    {
+        const std::string accessLevelToString(const int32_t level);
+        void cleanUpString(std::string &str);
+        std::string trim(const std::string &data, const char delim, const bool at_start = true,
+                         const bool at_end = true);
+        std::string trim(const std::string &data, const bool at_start = true,
+                         const bool at_end = true);
+
+        template <typename H, typename... T>
+        constexpr std::string create(const H &head, const T &...tail)
+        {
+            std::stringstream strm;
+
+            if constexpr (sizeof... (T))
+                strm << head << create(tail...);
+            else
+                strm << head;
+
+            return strm.str();
+        }
     }
 
     uint16_t DistanceApprox(const uint16_t x1, const uint16_t y1, const uint16_t z1,

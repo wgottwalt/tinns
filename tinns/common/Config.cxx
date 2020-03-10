@@ -51,8 +51,8 @@ bool PConfig::LoadOptions(const char *const nConfigTemplate[][2], const char *nC
             Val = mOptValRegEx->Match(2);
             //Console->Print("'%s'='%s'", Opt.c_str(), Val.c_str());
 
-            Misc::trim(Opt);
-            Misc::trim(Val);
+            Misc::String::trim(Opt);
+            Misc::String::trim(Val);
             //Console->Print("'%s'='%s'", Opt.c_str(), Val.c_str());
         }
         else if(mIncludeRegEx->Search(line))

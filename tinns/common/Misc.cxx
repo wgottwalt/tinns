@@ -3,156 +3,123 @@
 
 namespace Misc
 {
-    struct IPv4 {
-        union {
-            uint32_t val;
-            uint8_t raw[sizeof (uint32_t)];
-            struct {
-                uint8_t a, b, c, d;
-            };
-        };
-    };
-
-    uint32_t ip4StringToUint32(const std::string &ip)
+    namespace Net
     {
-        if (!ip.empty())
+        uint32_t ip4StringToUint32(const std::string &ip)
         {
-            std::string tmp = "";
-            uint32_t result = 0;
-
-            for (auto chr : ip)
+            if (!ip.empty())
             {
-                switch (chr)
+                std::string tmp = "";
+                uint32_t result = 0;
+
+                for (auto chr : ip)
                 {
-                    case '.':
-                        result <<= 8;
-                        result |= std::stoul(tmp);
-                        tmp.clear();
-                        continue;
-                    default:
-                        tmp += chr;
+                    switch (chr)
+                    {
+                        case '.':
+                            result <<= 8;
+                            result |= std::stoul(tmp);
+                            tmp.clear();
+                            continue;
+                        default:
+                            tmp += chr;
+                    }
                 }
+                result <<= 8;
+                result |= std::stoul(tmp);
+
+                return result;
             }
-            result <<= 8;
-            result |= std::stoul(tmp);
+
+            return 0;
+        }
+
+        const std::string uint32ToIp4String(const uint32_t ip)
+        {
+            const IPv4 nip = {.val = ip};
+            std::string result = "0.0.0.0";
+
+            if (Endian::Order::Native == Endian::Order::Little)
+                result = std::to_string(nip.d) + "." + std::to_string(nip.c) + "." +
+                         std::to_string(nip.b) + "." + std::to_string(nip.a);
+            else if (Endian::Order::Native == Endian::Order::Big)
+                result = std::to_string(nip.a) + "." + std::to_string(nip.b) + "." +
+                         std::to_string(nip.c) + "." + std::to_string(nip.d);
 
             return result;
         }
-
-        return 0;
     }
 
-    const std::string uint32ToIp4String(const uint32_t ip)
+    namespace String
     {
-        const IPv4 nip = {.val = ip};
-        std::string result = "0.0.0.0";
-
-        if (Endian::Order::Native == Endian::Order::Little)
-            result = std::to_string(nip.d) + "." + std::to_string(nip.c) + "." +
-                     std::to_string(nip.b) + "." + std::to_string(nip.a);
-        else if (Endian::Order::Native == Endian::Order::Big)
-            result = std::to_string(nip.a) + "." + std::to_string(nip.b) + "." +
-                     std::to_string(nip.c) + "." + std::to_string(nip.d);
-
-        return result;
-    }
-
-    //NEW
-    //this function allow to print a packet
-    //just for tracking values
-    void PrintPacket( uint8_t *Packet, int PacketSize )
-    {
-      Console->Print( "inside : PrintPacket" );
-
-      if ( PacketSize < 1 ){Console->Print( "Wrong packet" );}//do nothing
-      else
-      {
-        Console->Print( "PacketSize is : %d", PacketSize );
-
-        uint8_t value = 0;
-        for ( int i = 0;i < PacketSize;i++ )
+        const std::string accessLevelToString(const int32_t level)
         {
-          value = *( uint8_t* ) & Packet[i];
-          Console->Print( "value[%d] is : %x", i, value );
-        }
-      }
-    }
-
-    void cleanUpString(std::string &str)
-    {
-        if (str.length() > 3)
-        {
-            auto pos = str.find('\\');
-
-            while (pos != std::string::npos)
+            switch (level)
             {
-                str.replace(pos, 1, " ");
-                pos = str.find('\\', pos + 1);
+                case 0:
+                    return "Unregistered";
+                case 1:
+                    return "Registered";
+                case 30:
+                    return "Volunteer";
+                case 50:
+                    return "Gamemaster";
+                case 100:
+                    return "Administrator";
+                default:
+                    return "Error";
             }
-
-            if (str == "   ")
-                str.clear();
-            else
-                str = trim(str);
         }
-        else
-            str.clear();
-    }
 
-    std::string trim(const std::string &data, const char delim, const bool at_start,
-                     const bool at_end)
-    {
-        std::string tmp(data);
+        void cleanUpString(std::string &str)
+        {
+            if (str.length() > 3)
+            {
+                auto pos = str.find('\\');
 
-        if (at_start)
-            while (!tmp.empty() && (*(tmp.begin())) == delim)
-                tmp.erase(tmp.begin(), tmp.begin() + 1);
-        if (at_end)
-            while (!tmp.empty() && (*(tmp.end() - 1)) == delim)
-                tmp.erase(tmp.end() - 1, tmp.end());
+                while (pos != std::string::npos)
+                {
+                    str.replace(pos, 1, " ");
+                    pos = str.find('\\', pos + 1);
+                }
 
-        return tmp;
-    }
+                if (str == "   ")
+                    str.clear();
+                else
+                    str = trim(str);
+            }
+            else
+                str.clear();
+        }
 
-    std::string trim(const std::string &data, const bool at_start, const bool at_end)
-    {
-        std::string tmp(data);
+        std::string trim(const std::string &data, const char delim, const bool at_start,
+                         const bool at_end)
+        {
+            std::string tmp(data);
 
-        if (at_start)
-            while (!tmp.empty() && std::isspace(*(tmp.begin())))
-                tmp.erase(tmp.begin(), tmp.begin() + 1);
-        if (at_end)
-            while (!tmp.empty() && std::isspace(*(tmp.end() - 1)))
-                tmp.erase(tmp.end() - 1, tmp.end());
+            if (at_start)
+                while (!tmp.empty() && (*(tmp.begin())) == delim)
+                    tmp.erase(tmp.begin(), tmp.begin() + 1);
+            if (at_end)
+                while (!tmp.empty() && (*(tmp.end() - 1)) == delim)
+                    tmp.erase(tmp.end() - 1, tmp.end());
 
-        return tmp;
-    }
+            return tmp;
+        }
 
-    std::string GetAccessString( int level )
-    {
-      switch ( level )
-      {
-        case 0: return "Unregistered";
-        case 1: return "Registered";
-        case 30: return "Volunteer";
-        case 50: return "Gamemaster";
-        case 100: return "Administrator";
-      }
-      return "Error";
-    }
+        std::string trim(const std::string &data, const bool at_start, const bool at_end)
+        {
+            std::string tmp(data);
 
-    std::string &Ssprintf( const char *fmt, ... )
-    {
-      static std::string tmpstring;
-      char buff[1024];
-      va_list args;
+            if (at_start)
+                while (!tmp.empty() && std::isspace(*(tmp.begin())))
+                    tmp.erase(tmp.begin(), tmp.begin() + 1);
+            if (at_end)
+                while (!tmp.empty() && std::isspace(*(tmp.end() - 1)))
+                    tmp.erase(tmp.end() - 1, tmp.end());
 
-      va_start( args, fmt );
-      vsnprintf( buff, 1024, fmt, args );
-      va_end( args );
-      buff[1023] = '\0';
-      tmpstring = buff;
-      return tmpstring;
+            return tmp;
+        }
     }
 
     uint16_t DistanceApprox( const uint16_t x1, const uint16_t y1, const uint16_t z1, const uint16_t x2, const uint16_t y2, const uint16_t z2 )
