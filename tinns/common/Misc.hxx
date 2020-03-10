@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <string>
+#include <tuple>
 
 namespace Misc
 {
@@ -25,10 +26,10 @@ namespace Misc
     {
         const std::string accessLevelToString(const int32_t level);
         void cleanUpString(std::string &str);
-        std::string trim(const std::string &data, const char delim, const bool at_start = true,
-                         const bool at_end = true);
-        std::string trim(const std::string &data, const bool at_start = true,
-                         const bool at_end = true);
+        const std::string trim(const std::string &data, const char delim,
+                               const bool at_start = true, const bool at_end = true);
+        const std::string trim(const std::string &data, const bool at_start = true,
+                               const bool at_end = true);
 
         template <typename H, typename... T>
         constexpr std::string create(const H &head, const T &...tail)
@@ -44,11 +45,39 @@ namespace Misc
         }
     }
 
-    uint16_t DistanceApprox(const uint16_t x1, const uint16_t y1, const uint16_t z1,
-                            const uint16_t x2, const uint16_t y2, const uint16_t z2);
-    float Distance(const float x1, const float y1, const float z1, const float x2, const float y2,
-                   const float z2);
-    float Distance(const float x1, const float y1, const float x2, const float y2);
+    namespace Math
+    {
+        template <typename T>
+        T distanceApprox(const T x1, const T y1, const T z1, const T x2, const T y2, const T z2)
+        {
+            const T dx = (x1 >= x2) ? (x1 - x2) : (x2 - x1);
+            const T dy = (y1 >= y2) ? (y1 - y2) : (y2 - y1);
+            const T dz = (z1 >= z2) ? (z1 - z2) : (z2 - z1);
+            T dmax = dx;
+            uint32_t dminsum = dy;
+            uint32_t dapprox = 0;
+
+            if (dx < dy)
+            {
+                dmax = dy;
+                dminsum = dx;
+            }
+
+            if (dmax < dz)
+            {
+                dminsum += dmax;
+                dmax = dz;
+            }
+            else
+                dminsum += dz;
+
+            dapprox = static_cast<uint32_t>(dmax) + (dminsum / 3);
+            if (dapprox > 65535)
+                dapprox = 65535;
+
+            return static_cast<T>(dapprox);
+        }
+    }
 
     void InitRandom(uint32_t nInitialisationValue);
     // u16 value between MinVal and MaxVal (inclusive) with max range 32768

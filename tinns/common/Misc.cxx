@@ -92,8 +92,8 @@ namespace Misc
                 str.clear();
         }
 
-        std::string trim(const std::string &data, const char delim, const bool at_start,
-                         const bool at_end)
+        const std::string trim(const std::string &data, const char delim, const bool at_start,
+                               const bool at_end)
         {
             std::string tmp(data);
 
@@ -107,7 +107,7 @@ namespace Misc
             return tmp;
         }
 
-        std::string trim(const std::string &data, const bool at_start, const bool at_end)
+        const std::string trim(const std::string &data, const bool at_start, const bool at_end)
         {
             std::string tmp(data);
 
@@ -120,51 +120,6 @@ namespace Misc
 
             return tmp;
         }
-    }
-
-    uint16_t DistanceApprox( const uint16_t x1, const uint16_t y1, const uint16_t z1, const uint16_t x2, const uint16_t y2, const uint16_t z2 )
-    {
-      uint16_t DX, DY, DZ, DMax;
-      uint32_t DMinSum, DApprox;
-
-      DMax = DX = ( x1 >= x2 ) ? x1 - x2 : x2 - x1;
-      DMinSum = DY = ( y1 >= y2 ) ? y1 - y2 : y2 - y1;
-      DZ = ( z1 >= z2 ) ? z1 - z2 : z2 - z1;
-      if ( DX < DY )
-      {
-        DMax = DY;
-        DMinSum = DX;
-      }
-      if ( DMax < DZ )
-      {
-        DMinSum += DMax;
-        DMax = DZ;
-      }
-      else
-      {
-        DMinSum += DZ;
-      }
-
-      DApprox = DMax + ( uint32_t )( 0.33 * DMinSum );
-      if ( DApprox > 65535 )
-      {
-        DApprox = 65535;
-      }
-
-      // We use Dapprox = max(dx, dy) + K * min(dx, dy)
-      // Dapprox = (DX > DY) ? DX + (DY >> 1) : DY + (DX >> 1); // Fastest, but max error on dist is around 10% real dist
-      //Dapprox = (u16)((DX > DY) ? DX + 0.33*DY : DY + 0.33*DX); // max error on dist is around 5%, which should be enough
-      /*
-       // for dist approx debug
-      float fDX, fDY, fDZ, fDist;
-      fDX=(x1 - x2);
-      fDY=(y1 - y2);
-      fDZ=(z1 - z2);
-      fDist=sqrt(fDX*fDX + fDY*fDY + fDZ*fDZ);
-      if (fDist != 0) Console->Print("Dist: %f\tApprox: %d\tError: %d (%d%)", fDist, DApprox, (int)(DApprox-fDist), (int)(100*(DApprox-fDist)/fDist));
-      */
-
-      return ( uint16_t )DApprox;
     }
 
     /*** Portable pseudo-random number generator ***/

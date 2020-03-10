@@ -32,7 +32,7 @@ void PNPCWorld::CheckForEnemies(PNPC* nNPC)
                 if(tNPC->GetRealWorldID() == nNPC->GetRealWorldID())
                     continue;
 
-                uint16_t tDistance = Misc::DistanceApprox(nNPC->mPosX, nNPC->mPosY, nNPC->mPosZ, tNPC->mPosX, tNPC->mPosY, tNPC->mPosZ);
+                uint16_t tDistance = Misc::Math::distanceApprox(nNPC->mPosX, nNPC->mPosY, nNPC->mPosZ, tNPC->mPosX, tNPC->mPosY, tNPC->mPosZ);
 
                 // Is NPC infight?
                 if(nNPC->GetActionStatus() == NPC_ACTIONSTATE_ATTACK)

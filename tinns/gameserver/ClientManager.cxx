@@ -142,7 +142,7 @@ int PClientManager::UDPBroadcast( PMessage* nMessage, uint32_t nZoneID, uint16_t
 
       if ( nMaxDist ) // if limited to distance, do check
       {
-        Dapprox = Misc::DistanceApprox(( nChar->Coords ).mX, ( nChar->Coords ).mY, ( nChar->Coords ).mZ, nX, nY, nZ );
+        Dapprox = Misc::Math::distanceApprox(( nChar->Coords ).mX, ( nChar->Coords ).mY, ( nChar->Coords ).mZ, nX, nY, nZ );
         if ( Dapprox >  nMaxDist )
           continue;
       }
