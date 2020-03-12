@@ -64,4 +64,40 @@ namespace Time
     {
         return toDateString(toTimeT(timepoint), format);
     }
+
+    template <typename T = Clock>
+    constexpr size_t ns(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
+    }
+
+    template <typename T = Clock>
+    constexpr size_t us(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    }
+
+    template <typename T = Clock>
+    constexpr size_t ms(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    }
+
+    template <typename T = Clock>
+    constexpr size_t sec(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+    }
+
+    template <typename T = Clock>
+    constexpr size_t min(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+    }
+
+    template <typename T = Clock>
+    constexpr size_t hour(const Clock::duration &duration)
+    {
+        return std::chrono::duration_cast<std::chrono::hours>(duration).count();
+    }
 }
